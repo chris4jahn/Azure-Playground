@@ -1,0 +1,11 @@
+az vm create \
+    --resource-group rg-vm-ahb \
+    --admin-username azureuser \
+    --authentication-type password \
+    --admin-password 'myPa%$sw0rd*1' \
+    --name vm-08 \
+    --size Standard_D2s_v5 \
+    --image Win2022Datacenter \
+    --public-ip-address "" \
+    --location NorthEurope \
+    --no-wait

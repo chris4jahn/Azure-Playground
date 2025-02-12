@@ -1,2 +1,3 @@
 # My Azure Playground
+
 This repo is meant to be my playground to test things out using terraform, bicep, CLI, ...
