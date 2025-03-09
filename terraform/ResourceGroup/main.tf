@@ -1,8 +1,15 @@
+module "azure_location" {
+  source  = "azurerm/locations/azure"
+  version = "0.2.4"
+
+  location = "westeurope"
+}
+
 # define the prefixes and sufixes
 locals {
     #subscription_id = "xxxx-xxxx-xxxx-xxxx"
-    location = "germanywestcentral"
-    region_short = ["gwc"]
+    location = module.azure_location.location
+    region_short = [module.azure_location.short_name]
     name = "naming"
     caf_prefixes = ["myapp"]
     caf_suffixes = ["test", "001"]
@@ -25,6 +32,6 @@ data "azurecaf_name" "rg" {
 
 resource "azurerm_resource_group" "rg" {
     name = data.azurecaf_name.rg.result
-    location = local.location
+    location = module.azure_location.name
     tags = "${merge( local.common_tags)}"
 }

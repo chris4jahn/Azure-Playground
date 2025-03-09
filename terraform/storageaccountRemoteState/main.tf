@@ -5,17 +5,16 @@ resource "random_string" "resource_code" {
 }
 
 resource "azurerm_resource_group" "tfstate" {
-  name     = "RG-Terraform-Storage-GWC-01"
-  location = "germanywestcentral"
+  name     = var.resource_group_name
+  location = var.location
 }
 
 resource "azurerm_storage_account" "tfstate" {
   name                     = "sttfstate${random_string.resource_code.result}"
   resource_group_name      = azurerm_resource_group.tfstate.name
-  location                 = azurerm_resource_group.tfstate.location
+  location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "GRS"
-  allow_nested_items_to_be_public = false
 
   tags = {
     environment = "production"
@@ -24,6 +23,6 @@ resource "azurerm_storage_account" "tfstate" {
 
 resource "azurerm_storage_container" "tfstate" {
   name                  = "tfstate"
-  storage_account_id    = azurerm_storage_account.tfstate.id
+  storage_account_name  = azurerm_storage_account.tfstate.name
   container_access_type = "private"
 }
