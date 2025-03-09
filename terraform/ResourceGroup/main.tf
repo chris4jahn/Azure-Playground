@@ -1,3 +1,20 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 2.0"
+    }
+    azurecaf = {
+      source  = "aztfmod/azurecaf"
+      version = "~> 1.2"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
 module "azure_location" {
   source  = "azurerm/locations/azure"
   version = "0.2.4"
@@ -5,9 +22,9 @@ module "azure_location" {
   location = "westeurope"
 }
 
-# define the prefixes and sufixes
+# This is the definition for the acurecaf module for the prefixes and sufixes
 locals {
-    #subscription_id = "xxxx-xxxx-xxxx-xxxx"
+    # here we use the azure location module to get the short name of the location
     location = module.azure_location.location
     region_short = [module.azure_location.short_name]
     name = "naming"
@@ -16,6 +33,8 @@ locals {
     common_tags  = {
         environment = "Test"
         team        = "Cloud Infrastructre"
+        location    = module.azure_location.display_name
+
     }
 }
 
@@ -30,6 +49,7 @@ data "azurecaf_name" "rg" {
     clean_input   = true
 }
 
+# Create a resource group and use the locations module to get the location
 resource "azurerm_resource_group" "rg" {
     name = data.azurecaf_name.rg.result
     location = module.azure_location.name
